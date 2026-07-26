@@ -10,7 +10,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication(scanBasePackages = {"com.fooddelivery.governmentid", "com.fooddelivery.common"})
 @EnableDiscoveryClient
 @EnableFeignClients
-@EnableJpaRepositories
+@EnableJpaRepositories(basePackages = {"com.fooddelivery.governmentid", "com.fooddelivery.common"})
+@org.springframework.boot.autoconfigure.domain.EntityScan(basePackages = {"com.fooddelivery.governmentid", "com.fooddelivery.common"})
 @EnableAsync
 public class GovernmentIDValidationServiceApplication {
 

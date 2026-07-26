@@ -19,6 +19,9 @@ public class VehicleVerificationService {
 
     private final RestClient.Builder restClientBuilder;
     
+    @Value("${spring.profiles.active:dev}")
+    private String activeProfile;
+
     @Value("${verification.vahan.api.url:https://api.mock-vahan.gov.in/rc/verify}")
     private String vahanApiUrl;
     
@@ -53,6 +56,11 @@ public class VehicleVerificationService {
      * @return RCVerificationResponse DTO encapsulating the registry data
      */
     public RCVerificationResponse verifyVehicleRC(String registrationNumber) {
+        if ("dev".equalsIgnoreCase(activeProfile) || "test".equalsIgnoreCase(activeProfile)) {
+            log.info("MOCKING RC Verification for Dev/Test Profile. RegNo: {}", registrationNumber);
+            return new RCVerificationResponse(true, "MOCK DEV OWNER", "FIT", "2030-12-31", "Mocked success for dev");
+        }
+
         if (!RC_NUMBER_PATTERN.matcher(registrationNumber).matches()) {
             throw new IllegalArgumentException("Invalid Vehicle Registration Number format.");
         }

@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
@@ -37,6 +38,9 @@ public class BrandVerificationService {
     private final NameMatchingService nameMatchingService;
     private final RestaurantServiceClient restaurantServiceClient;
     private final RedisTemplate<String, String> redisTemplate;
+    
+    @Value("${spring.profiles.active:dev}")
+    private String activeProfile;
     
     private static final double SIMILARITY_THRESHOLD = 0.85;
 
@@ -103,6 +107,11 @@ public class BrandVerificationService {
         // In reality, this would call Signzy/Cashfree which would hit our webhook asynchronously
         // For testing, we won't mock the synchronous response here. 
         // The mock provider will trigger processPennyDropWebhook separately.
+        
+        if ("dev".equalsIgnoreCase(activeProfile) || "test".equalsIgnoreCase(activeProfile)) {
+            log.info("MOCKING Penny Drop Webhook for Dev Profile");
+            processPennyDropWebhook(brandId, brandName, true, brandName);
+        }
     }
     
     public void initiatePennyDropFallback(UUID brandId, String accountNumber, String ifsc, String brandName, Throwable t) {

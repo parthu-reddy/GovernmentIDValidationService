@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -36,16 +37,26 @@ public class VerificationController {
     public record BankRequest(@NotBlank String accountNumber, @NotBlank String ifscCode, @NotBlank String kycFullName) {}
     public record BiometricRequest(@NotBlank String selfieUrl) {}
 
+    @Value("${spring.profiles.active:dev}")
+    private String activeProfile;
+
     @GetMapping("/upload-url")
-    @PreAuthorize("hasRole('DELIVERY')")
+    @PreAuthorize("hasAnyRole('DELIVERY', 'RESTAURANT', 'RESTAURANT_MANAGER')")
     public ResponseEntity<?> getPresignedUploadUrl(
             @RequestParam DocumentType docType, 
             @RequestParam String contentType,
             Principal principal) {
         
-        UUID executiveId = UUID.fromString(principal.getName());
+        UUID executiveId = principal != null ? UUID.fromString(principal.getName()) : UUID.randomUUID();
         String ext = contentType.contains("pdf") ? "pdf" : "jpg";
         String objectKey = "documents/" + executiveId + "/" + docType.name() + "_" + UUID.randomUUID() + "." + ext;
+        
+        if ("dev".equalsIgnoreCase(activeProfile) || "test".equalsIgnoreCase(activeProfile)) {
+            return ResponseEntity.ok(java.util.Map.of(
+                "uploadUrl", "http://localhost:8080/mock-upload-url/" + objectKey,
+                "objectKey", objectKey
+            ));
+        }
         
         java.net.URL url = storageService.generatePresignedUploadUrl(objectKey, contentType, java.time.Duration.ofMinutes(15));
         

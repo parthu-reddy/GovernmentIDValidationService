@@ -21,6 +21,9 @@ public class DrivingLicenseVerificationService {
 
     private final RestClient.Builder restClientBuilder;
     
+    @Value("${spring.profiles.active:dev}")
+    private String activeProfile;
+
     @Value("${verification.sarathi.api.url:https://api.mock-sarathi.gov.in/dl/verify}")
     private String sarathiApiUrl;
     
@@ -57,6 +60,10 @@ public class DrivingLicenseVerificationService {
      * @return DLVerificationResponse DTO encapsulating the registry data
      */
     public DLVerificationResponse verifyDrivingLicense(String dlNumber, String dateOfBirth) {
+        if ("dev".equalsIgnoreCase(activeProfile) || "test".equalsIgnoreCase(activeProfile)) {
+            log.info("MOCKING DL Verification for Dev/Test Profile. DL: {}, DOB: {}", dlNumber, dateOfBirth);
+            return new DLVerificationResponse(true, "MOCK DEV USER", "LMV", "2030-12-31", "Mocked success for dev");
+        }
         
         if (!DL_NUMBER_PATTERN.matcher(dlNumber).matches()) {
             throw new IllegalArgumentException("Invalid Driving License format. Expected 15 alphanumeric characters (e.g., RJ14 20110012345)");
