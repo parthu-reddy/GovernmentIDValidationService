@@ -1,0 +1,11 @@
+package com.fooddelivery.governmentid.repository;
+
+import com.fooddelivery.governmentid.entity.ExecutiveBankDetails;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
+
+import java.util.UUID;
+
+public interface ExecutiveBankDetailsRepository extends JpaRepository<ExecutiveBankDetails, UUID> {
+    Optional<ExecutiveBankDetails> findByExecutiveId(UUID executiveId);
+}

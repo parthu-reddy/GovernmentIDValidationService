@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: government-id-validation-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/government_id_db
+    username: myuser
+    password: mypassword
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+
+server:
+  port: 8087
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+logging:
+  level:
+    root: INFO
+    com.fooddelivery.governmentid: DEBUG
+
+cloud:
+  aws:
+    s3:
+      bucket: ${R2_BUCKET_NAME:labouffe}
+      endpoint: ${R2_ENDPOINT:https://80708a753745ca23eabc20b4b3dee5fa.r2.cloudflarestorage.com}
+    region:
+      static: auto
+    credentials:
+      access-key: ${R2_ACCESS_KEY_ID:4bf8d29f8d20ea8d3d484c9f97671aac}
+      secret-key: ${R2_SECRET_ACCESS_KEY:a654ae1386d8152018512c4eb0c51b171727c97a49ef9d8bb8c711471515ca3e}
