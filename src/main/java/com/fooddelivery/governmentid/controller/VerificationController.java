@@ -51,7 +51,7 @@ public class VerificationController {
         String ext = contentType.contains("pdf") ? "pdf" : "jpg";
         String objectKey = "documents/" + executiveId + "/" + docType.name() + "_" + UUID.randomUUID() + "." + ext;
         
-        if ("dev".equalsIgnoreCase(activeProfile) || "test".equalsIgnoreCase(activeProfile)) {
+        if ("test".equalsIgnoreCase(activeProfile)) {
             return ResponseEntity.ok(java.util.Map.of(
                 "uploadUrl", "http://localhost:8080/mock-upload-url/" + objectKey,
                 "objectKey", objectKey
