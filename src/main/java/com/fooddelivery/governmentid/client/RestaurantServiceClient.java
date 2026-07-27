@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.UUID;
 import lombok.Data;
 
-@FeignClient(name = "restaurant-service", url = "${restaurant.base.url:http://localhost:8081}")
+@FeignClient(name = "restaurant-service", url = "${restaurant.base.url:}")
 public interface RestaurantServiceClient {
 
     @PostMapping("/api/v1/internal/brands/{brandId}/verification-callback")

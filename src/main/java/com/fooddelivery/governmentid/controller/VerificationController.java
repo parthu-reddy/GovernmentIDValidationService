@@ -51,7 +51,7 @@ public class VerificationController {
         String ext = contentType.contains("pdf") ? "pdf" : "jpg";
         String objectKey = "documents/" + executiveId + "/" + docType.name() + "_" + UUID.randomUUID() + "." + ext;
         
-        if ("test".equalsIgnoreCase(activeProfile)) {
+        if ("dev".equalsIgnoreCase(activeProfile) || "test".equalsIgnoreCase(activeProfile)) {
             return ResponseEntity.ok(java.util.Map.of(
                 "uploadUrl", "http://localhost:8080/mock-upload-url/" + objectKey,
                 "objectKey", objectKey
@@ -137,8 +137,15 @@ public class VerificationController {
         
         VerificationStatus status = response.isValid() ? VerificationStatus.APPROVED : VerificationStatus.REJECTED;
 
+        String jsonResponse = "";
+        try {
+            jsonResponse = objectMapper.writeValueAsString(response);
+        } catch (Exception e) {
+            log.warn("Failed to serialize RC response", e);
+            jsonResponse = response.toString();
+        }
         documentService.recordVerificationResult(
-                executiveId, DocumentType.RC, request.registrationNumber(), request.documentUrl(), response.toString(), expiry, status
+                executiveId, DocumentType.RC, request.registrationNumber(), request.documentUrl(), jsonResponse, expiry, status
         );
         
         return ResponseEntity.ok(response);

@@ -10,6 +10,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -35,6 +38,8 @@ public class BrandBankDetails {
     private BigDecimal nameMatchScore;
     
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @jakarta.persistence.Column(name = "penny_drop_status", columnDefinition = "verification_status")
     private VerificationStatus pennyDropStatus;
     
     private OffsetDateTime verifiedAt;

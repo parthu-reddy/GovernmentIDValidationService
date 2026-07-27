@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -26,9 +29,11 @@ public class BrandVerificationAuditLog {
     
     private String verificationProvider; // e.g. "KARZA_GSTIN"
     
+    @JdbcTypeCode(SqlTypes.JSON)
     @jakarta.persistence.Column(columnDefinition = "jsonb")
     private String rawRequestPayload;
     
+    @JdbcTypeCode(SqlTypes.JSON)
     @jakarta.persistence.Column(columnDefinition = "jsonb")
     private String rawResponsePayload;
     

@@ -5,6 +5,7 @@ import com.fooddelivery.common.enums.VerificationStatus;
 import com.fooddelivery.governmentid.repository.ExecutiveBankDetailsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,9 @@ public class FinancialVerificationService {
     private final ExecutiveBankDetailsRepository bankDetailsRepository;
     private final NameMatchingService nameMatchingService;
 
+    @Value("${spring.profiles.active:dev}")
+    private String activeProfile;
+
     /**
      * Executes IMPS Penny Drop verification and matches the beneficiary name using Jaro-Winkler.
      * 
@@ -31,11 +35,18 @@ public class FinancialVerificationService {
     @Transactional
     public ExecutiveBankDetails verifyBankAccount(UUID executiveId, String accountNumber, String ifscCode, String kycFullName) {
 
-        // Simulate IMPS Penny Drop API Call returning the registered bank name
-        String simulatedBankBeneficiaryName = simulateImpsPennyDrop(accountNumber, ifscCode, kycFullName);
-
-        // Perform fuzzy name match against KYC Name
-        NameMatchingService.MatchResult matchResult = nameMatchingService.evaluateNameMatch(kycFullName, simulatedBankBeneficiaryName);
+        String simulatedBankBeneficiaryName;
+        NameMatchingService.MatchResult matchResult;
+        if ("dev".equalsIgnoreCase(activeProfile) || "test".equalsIgnoreCase(activeProfile)) {
+            log.info("Dev/Test profile: Bypassing banking gateway and name match for executive {}", executiveId);
+            simulatedBankBeneficiaryName = kycFullName != null ? kycFullName : "DEV EXECUTIVE";
+            matchResult = new NameMatchingService.MatchResult(1.0, VerificationStatus.APPROVED);
+        } else {
+            // Simulate IMPS Penny Drop API Call returning the registered bank name
+            simulatedBankBeneficiaryName = simulateImpsPennyDrop(accountNumber, ifscCode, kycFullName);
+            // Perform fuzzy name match against KYC Name
+            matchResult = nameMatchingService.evaluateNameMatch(kycFullName, simulatedBankBeneficiaryName);
+        }
 
         ExecutiveBankDetails bankDetails = bankDetailsRepository.findByExecutiveId(executiveId)
                 .orElseGet(ExecutiveBankDetails::new);

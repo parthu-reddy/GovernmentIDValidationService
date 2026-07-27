@@ -34,6 +34,7 @@ public class ExecutiveBankDetails {
 
     @Enumerated(EnumType.STRING)
     @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Column(name = "penny_drop_status", columnDefinition = "verification_status")
     private VerificationStatus pennyDropStatus = VerificationStatus.PENDING;
 
     @Column(precision = 4, scale = 3)

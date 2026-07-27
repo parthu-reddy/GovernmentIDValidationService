@@ -49,9 +49,16 @@ public class BrandVerificationService {
     public void verifyGstin(UUID brandId, String gstin, String brandName) {
         log.info("Verifying GSTIN for brand {}", brandId);
         
-        // Mock external API call
-        boolean isSuccess = !gstin.startsWith("INVALID");
-        String legalName = isSuccess ? brandName + " PVT LTD" : null;
+        boolean isSuccess;
+        String legalName;
+        if ("dev".equalsIgnoreCase(activeProfile) || "test".equalsIgnoreCase(activeProfile)) {
+            log.info("Dev/Test profile: Bypassing GSTIN verification for brand {}", brandId);
+            isSuccess = true;
+            legalName = brandName + " PVT LTD";
+        } else {
+            isSuccess = !gstin.startsWith("INVALID");
+            legalName = isSuccess ? brandName + " PVT LTD" : null;
+        }
         
         VerificationStatus status = isSuccess ? VerificationStatus.APPROVED : VerificationStatus.REJECTED;
         
@@ -144,7 +151,13 @@ public class BrandVerificationService {
             VerificationStatus status;
             Double score = null;
             
-            if (isSuccess && beneficiaryName != null) {
+            if ("dev".equalsIgnoreCase(activeProfile) || "test".equalsIgnoreCase(activeProfile)) {
+                log.info("Dev/Test profile: Bypassing name match in Penny Drop webhook for brand {}", brandId);
+                score = 1.0;
+                status = VerificationStatus.APPROVED;
+                if (beneficiaryName == null) beneficiaryName = registeredBrandName != null ? registeredBrandName : "DEV BENEFICIARY";
+                bankDetails.setNameMatchScore(BigDecimal.valueOf(score));
+            } else if (isSuccess && beneficiaryName != null) {
                 NameMatchingService.MatchResult result = nameMatchingService.evaluateNameMatch(registeredBrandName, beneficiaryName);
                 score = result.score();
                 bankDetails.setNameMatchScore(BigDecimal.valueOf(score));
