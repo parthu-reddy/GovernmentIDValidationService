@@ -22,6 +22,7 @@ public class ExecutiveDocument {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "document_id")
     private UUID documentId;
 
     @Column(name = "executive_id", nullable = false)
@@ -32,10 +33,10 @@ public class ExecutiveDocument {
     @Column(name = "doc_type", nullable = false, columnDefinition = "document_type")
     private DocumentType docType;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "document_number", nullable = false, length = 100)
     private String documentNumber;
 
-    @Column(length = 512)
+    @Column(name = "document_url", length = 512)
     private String documentUrl;
 
     @Enumerated(EnumType.STRING)
@@ -44,11 +45,13 @@ public class ExecutiveDocument {
     private VerificationStatus apiVerificationStatus = VerificationStatus.PENDING;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
+    @Column(name = "api_raw_response", columnDefinition = "jsonb")
     private String apiRawResponse; // Store as string representation of JSON
 
+    @Column(name = "expiry_date")
     private LocalDate expiryDate;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     private OffsetDateTime createdAt;
 }

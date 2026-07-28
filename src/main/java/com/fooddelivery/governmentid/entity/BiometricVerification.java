@@ -19,20 +19,22 @@ public class BiometricVerification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "verification_id")
     private UUID verificationId;
 
     @Column(name = "executive_id", nullable = false)
     private UUID executiveId;
 
-    @Column(nullable = false, length = 512)
+    @Column(name = "selfie_url", nullable = false, length = 512)
     private String selfieUrl;
 
-    @Column(nullable = false, precision = 4, scale = 3)
+    @Column(name = "confidence_score", nullable = false, precision = 4, scale = 3)
     private BigDecimal confidenceScore;
 
-    @Column(nullable = false)
+    @Column(name = "is_live", nullable = false)
     private boolean isLive;
 
     @CreationTimestamp
+    @Column(name = "verification_time")
     private OffsetDateTime verificationTime;
 }
