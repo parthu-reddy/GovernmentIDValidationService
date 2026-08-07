@@ -5,22 +5,18 @@ import com.fooddelivery.governmentid.controller.BrandVerificationController;
 import com.fooddelivery.governmentid.controller.VerificationController;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.stereotype.Service;
-
 import java.security.Principal;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Slf4j
 public class GovernmentIdMcpService {
-
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(GovernmentIdMcpService.class);
     private final VerificationController verificationController;
     private final BrandVerificationController brandVerificationController;
     private final ObjectMapper objectMapper;
 
-    public GovernmentIdMcpService(VerificationController verificationController,
-                                  BrandVerificationController brandVerificationController,
-                                  ObjectMapper objectMapper) {
+    public GovernmentIdMcpService(VerificationController verificationController, BrandVerificationController brandVerificationController, ObjectMapper objectMapper) {
         this.verificationController = verificationController;
         this.brandVerificationController = brandVerificationController;
         this.objectMapper = objectMapper;
@@ -31,7 +27,6 @@ public class GovernmentIdMcpService {
     }
 
     // VerificationController
-
     @Tool(description = "Get presigned upload url. Provide executiveId, docType (e.g. DRIVING_LICENSE, RC), and contentType (e.g. image/jpeg).")
     public String getPresignedUploadUrl(String executiveId, String docType, String contentType) {
         try {
@@ -100,7 +95,6 @@ public class GovernmentIdMcpService {
     }
 
     // BrandVerificationController
-
     @Tool(description = "Verify Brand GSTIN. Provide JSON string of GstinRequest (brandId, gstin, brandName).")
     public String verifyBrandGstin(String requestJson) {
         try {

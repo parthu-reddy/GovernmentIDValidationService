@@ -3,24 +3,19 @@ package com.fooddelivery.governmentid.service;
 import com.fooddelivery.governmentid.entity.ExecutiveBankDetails;
 import com.fooddelivery.common.enums.VerificationStatus;
 import com.fooddelivery.governmentid.repository.ExecutiveBankDetailsRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class FinancialVerificationService {
-
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(FinancialVerificationService.class);
     private final ExecutiveBankDetailsRepository bankDetailsRepository;
     private final NameMatchingService nameMatchingService;
-
     @Value("${spring.profiles.active:dev}")
     private String activeProfile;
 
@@ -34,7 +29,6 @@ public class FinancialVerificationService {
      */
     @Transactional
     public ExecutiveBankDetails verifyBankAccount(UUID executiveId, String accountNumber, String ifscCode, String kycFullName) {
-
         String simulatedBankBeneficiaryName;
         NameMatchingService.MatchResult matchResult;
         if ("dev".equalsIgnoreCase(activeProfile) || "test".equalsIgnoreCase(activeProfile)) {
@@ -47,10 +41,7 @@ public class FinancialVerificationService {
             // Perform fuzzy name match against KYC Name
             matchResult = nameMatchingService.evaluateNameMatch(kycFullName, simulatedBankBeneficiaryName);
         }
-
-        ExecutiveBankDetails bankDetails = bankDetailsRepository.findByExecutiveId(executiveId)
-                .orElseGet(ExecutiveBankDetails::new);
-        
+        ExecutiveBankDetails bankDetails = bankDetailsRepository.findByExecutiveId(executiveId).orElseGet(ExecutiveBankDetails::new);
         bankDetails.setExecutiveId(executiveId);
         bankDetails.setAccountNumber(accountNumber);
         bankDetails.setIfscCode(ifscCode);
@@ -58,10 +49,7 @@ public class FinancialVerificationService {
         bankDetails.setNameMatchScore(BigDecimal.valueOf(matchResult.score()));
         bankDetails.setPennyDropStatus(matchResult.status());
         bankDetails.setVerifiedAt(OffsetDateTime.now());
-
-        log.info("Penny drop verification completed for executive {}. Status: {}, Score: {}", 
-                 executiveId, matchResult.status(), matchResult.score());
-
+        log.info("Penny drop verification completed for executive {}. Status: {}, Score: {}", executiveId, matchResult.status(), matchResult.score());
         return bankDetailsRepository.save(bankDetails);
     }
 
@@ -81,5 +69,11 @@ public class FinancialVerificationService {
 
     public java.util.Optional<ExecutiveBankDetails> getBankDetails(UUID executiveId) {
         return bankDetailsRepository.findByExecutiveId(executiveId);
+    }
+
+    @java.lang.SuppressWarnings("all")
+    public FinancialVerificationService(final ExecutiveBankDetailsRepository bankDetailsRepository, final NameMatchingService nameMatchingService) {
+        this.bankDetailsRepository = bankDetailsRepository;
+        this.nameMatchingService = nameMatchingService;
     }
 }

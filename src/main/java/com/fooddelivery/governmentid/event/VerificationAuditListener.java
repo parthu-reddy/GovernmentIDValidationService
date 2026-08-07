@@ -1,17 +1,14 @@
 package com.fooddelivery.governmentid.event;
 
 import com.fooddelivery.governmentid.repository.BrandVerificationAuditLogRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
-@RequiredArgsConstructor
 public class VerificationAuditListener {
-
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(VerificationAuditListener.class);
     private final BrandVerificationAuditLogRepository auditLogRepository;
 
     @Async
@@ -23,5 +20,10 @@ public class VerificationAuditListener {
         } catch (Exception e) {
             log.error("Failed to persist verification audit log for entity: {}", event.getAuditLog().getEntityId(), e);
         }
+    }
+
+    @java.lang.SuppressWarnings("all")
+    public VerificationAuditListener(final BrandVerificationAuditLogRepository auditLogRepository) {
+        this.auditLogRepository = auditLogRepository;
     }
 }
