@@ -7,6 +7,12 @@ import com.fooddelivery.common.constants.KafkaConstants;
 import com.fooddelivery.governmentid.service.BrandVerificationService;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.kafka.annotation.DltHandler;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.kafka.retrytopic.DltStrategy;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
@@ -20,6 +26,7 @@ public class BrandCreatedEventListener {
     private final BrandVerificationService brandVerificationService;
     private final StringRedisTemplate redisTemplate;
 
+    @RetryableTopic(attempts = "5", backoff = @Backoff(delay = 1000, multiplier = 2.0), autoCreateTopics = "true", dltStrategy = DltStrategy.FAIL_ON_ERROR)
     @KafkaListener(topics = KafkaConstants.TOPIC_RESTAURANT_EVENTS, groupId = KafkaConstants.GROUP_GOV_ID_VALIDATION)
     public void onRestaurantEvent(@Payload String message, @Header("eventType") String eventType) {
         if (EventType.BRAND_CREATED.name().equals(eventType)) {
@@ -61,5 +68,10 @@ public class BrandCreatedEventListener {
         this.objectMapper = objectMapper;
         this.brandVerificationService = brandVerificationService;
         this.redisTemplate = redisTemplate;
+    }
+
+    @DltHandler
+    public void handleDlt(Object message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+        System.err.println("Message failed 5 times and sent to DLT: " + topic + " - " + message);
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import java.util.UUID;
 
-@FeignClient(name = "restaurant-service", url = "${restaurant.base.url:}")
+@FeignClient(name = "restaurant-service", url = "${restaurant.base.url:}", fallback = RestaurantServiceClientFallback.class)
 public interface RestaurantServiceClient {
     @PostMapping("/api/v1/internal/brands/{brandId}/verification-callback")
     ResponseEntity<Void> updateVerificationStatus(@PathVariable("brandId") UUID brandId, @RequestBody VerificationCallbackRequest request);

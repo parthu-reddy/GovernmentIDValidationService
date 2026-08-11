@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.Map;
 
-@FeignClient(name = "deliveryexecutive")
+@FeignClient(name = "delivery-service", fallback = DeliveryExecutiveClientFallback.class)
 public interface DeliveryExecutiveClient {
 
     @PostMapping("/api/v1/internal/delivery/drivers/{driverId}/suspend")
