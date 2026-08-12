@@ -3,7 +3,7 @@ package com.fooddelivery.governmentid.client;
 import org.springframework.stereotype.Component;
 import org.springframework.http.ResponseEntity;
 
-@Component
+@Component("governmentidvalidationDeliveryExecutiveClientFallback")
 public class DeliveryExecutiveClientFallback implements DeliveryExecutiveClient {
     @Override
     public ResponseEntity<Void> suspendDriver(String driverId) {

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.http.ResponseEntity;
 import java.util.UUID;
 
-@Component
+@Component("governmentidvalidationRestaurantServiceClientFallback")
 public class RestaurantServiceClientFallback implements RestaurantServiceClient {
     @Override
     public ResponseEntity<Void> updateVerificationStatus(UUID brandId, VerificationCallbackRequest request) {
