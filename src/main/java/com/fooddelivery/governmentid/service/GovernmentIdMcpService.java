@@ -9,9 +9,10 @@ import java.security.Principal;
 import java.util.UUID;
 
 @Service
+@lombok.extern.slf4j.Slf4j
 public class GovernmentIdMcpService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(GovernmentIdMcpService.class);
+
     private final VerificationController verificationController;
     private final BrandVerificationController brandVerificationController;
     private final ObjectMapper objectMapper;

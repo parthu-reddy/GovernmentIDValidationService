@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-@SpringBootApplication(scanBasePackages = {"com.fooddelivery.governmentid", "com.fooddelivery.common"})
+@SpringBootApplication(scanBasePackages = {"com.fooddelivery.governmentid", "com.fooddelivery.common", "com.fooddelivery"})
 @EnableDiscoveryClient
 @EnableFeignClients
 @EnableJpaRepositories(basePackages = {"com.fooddelivery.governmentid", "com.fooddelivery.common"})

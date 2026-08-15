@@ -5,9 +5,10 @@ import com.fooddelivery.governmentid.util.JaroWinklerMatcher;
 import org.springframework.stereotype.Service;
 
 @Service
+@lombok.extern.slf4j.Slf4j
 public class NameMatchingService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(NameMatchingService.class);
+
     // Threshold configurations balancing security and operational scale
     private static final double AUTO_APPROVE_THRESHOLD = 0.85;
     private static final double MANUAL_REVIEW_THRESHOLD = 0.7;

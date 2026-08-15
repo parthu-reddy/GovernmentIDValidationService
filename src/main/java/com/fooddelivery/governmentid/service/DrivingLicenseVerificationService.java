@@ -12,9 +12,10 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import com.fooddelivery.governmentid.exception.ExternalVerificationException;
 
 @Service
+@lombok.extern.slf4j.Slf4j
 public class DrivingLicenseVerificationService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DrivingLicenseVerificationService.class);
+
     private final RestClient.Builder restClientBuilder;
     @Value("${spring.profiles.active:dev}")
     private String activeProfile;

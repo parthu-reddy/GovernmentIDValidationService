@@ -25,9 +25,10 @@ import org.springframework.scheduling.annotation.Async;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @Service
+@lombok.extern.slf4j.Slf4j
 public class BrandVerificationService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BrandVerificationService.class);
+
     private final BrandDocumentRepository documentRepository;
     private final BrandBankDetailsRepository bankDetailsRepository;
     private final ApplicationEventPublisher eventPublisher;

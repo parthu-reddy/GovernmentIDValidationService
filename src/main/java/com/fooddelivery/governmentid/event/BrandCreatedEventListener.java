@@ -19,9 +19,10 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
+@lombok.extern.slf4j.Slf4j
 public class BrandCreatedEventListener {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BrandCreatedEventListener.class);
+
     private final ObjectMapper objectMapper;
     private final BrandVerificationService brandVerificationService;
     private final StringRedisTemplate redisTemplate;

@@ -11,9 +11,10 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Service
+@lombok.extern.slf4j.Slf4j
 public class FinancialVerificationService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(FinancialVerificationService.class);
+
     private final ExecutiveBankDetailsRepository bankDetailsRepository;
     private final NameMatchingService nameMatchingService;
     @Value("${spring.profiles.active:dev}")
