@@ -16,12 +16,19 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootTest(classes = BaseMessagingClass.TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@org.springframework.test.context.ActiveProfiles("contract-test")
 @AutoConfigureMessageVerifier
 @EmbeddedKafka(partitions = 1, topics = {"delivery-executive-events"})
 public abstract class BaseMessagingClass {
 
-    @org.springframework.boot.test.context.TestConfiguration
-    
+    @org.springframework.boot.SpringBootConfiguration
+    @org.springframework.boot.autoconfigure.EnableAutoConfiguration(exclude = {
+            org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration.class,
+            org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration.class,
+            org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration.class,
+            org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration.class,
+            org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration.class
+    })
     static class TestConfig {
         @Bean
         public KafkaMessageVerifier kafkaMessageVerifier() {
@@ -37,17 +44,11 @@ public abstract class BaseMessagingClass {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
+    /** Mirrors BiometricVerificationService's suspension publish. */
     public void fireExecutiveValidated() {
-        String payload = """
-{
-  "eventId": "gov-888",
-  "type": "EXECUTIVE_VALIDATED",
-  "payload": {
-    "executiveId": "exec-777",
-    "status": "APPROVED"
-  }
-}""";
-        kafkaTemplate.send("delivery-executive-events", payload);
+        java.util.UUID executiveId = java.util.UUID.fromString("4f4a4e37-6ca5-5598-94f1-43ef1628f631");
+        kafkaTemplate.send("delivery-executive-events", executiveId.toString(),
+                "{\"eventType\":\"EXECUTIVE_SUSPENSION_REQUESTED\",\"executiveId\":\"" + executiveId + "\"}");
     }
 
 }
