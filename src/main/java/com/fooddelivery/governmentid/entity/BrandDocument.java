@@ -14,12 +14,32 @@ import org.hibernate.type.SqlTypes;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import org.springframework.data.domain.Persistable;
+import jakarta.persistence.Transient;
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.PostLoad;
+
 @Entity
 @Table(name = "brand_documents")
-public class BrandDocument {
+public class BrandDocument implements Persistable<UUID> {
     @Id
     @Column(name = "id")
     private UUID id;
+
+    @Transient
+    private boolean isNew = true;
+
+    @Override
+    public boolean isNew() {
+        return this.isNew;
+    }
+
+    @PostPersist
+    @PostLoad
+    void markNotNew() {
+        this.isNew = false;
+    }
+
     @Column(name = "brand_id")
     private UUID brandId;
     @Enumerated(EnumType.STRING)

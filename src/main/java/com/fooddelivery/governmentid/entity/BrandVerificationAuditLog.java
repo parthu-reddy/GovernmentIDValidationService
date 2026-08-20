@@ -9,9 +9,14 @@ import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.springframework.data.domain.Persistable;
+import jakarta.persistence.Transient;
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.PostLoad;
+
 @Entity
 @Table(name = "brand_verification_audit_logs")
-public class BrandVerificationAuditLog {
+public class BrandVerificationAuditLog implements Persistable<UUID> {
     @Id
     @Column(name = "id")
     private UUID id;
@@ -26,6 +31,23 @@ public class BrandVerificationAuditLog {
     private String rawResponsePayload;
     @Column(name = "similarity_score")
     private Double similarityScore;
+    @Column(name = "verification_data")
+    private String verificationData;
+
+    @Transient
+    private boolean isNew = true;
+
+    @Override
+    public boolean isNew() {
+        return this.isNew;
+    }
+
+    @PostPersist
+    @PostLoad
+    void markNotNew() {
+        this.isNew = false;
+    }
+
     @Column(name = "status")
     private String status;
     @Column(name = "created_at")

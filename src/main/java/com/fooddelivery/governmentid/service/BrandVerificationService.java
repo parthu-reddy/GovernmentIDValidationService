@@ -57,11 +57,11 @@ public class BrandVerificationService {
         BrandDocument doc = documentRepository.findByBrandIdAndDocType(brandId, DocumentType.GSTIN).orElseGet(() -> BrandDocument.builder().id(UUID.randomUUID()).brandId(brandId).docType(DocumentType.GSTIN).build());
         doc.setDocumentNumber(gstin);
         doc.setApiVerificationStatus(status);
-        doc.setApiRawResponse("{\"legalName\":\"" + legalName + "\"}");
+        doc.setApiRawResponse(asJson("legalName", legalName));
         doc.setVerifiedAt(OffsetDateTime.now());
         documentRepository.save(doc);
         // Audit log
-        BrandVerificationAuditLog audit = BrandVerificationAuditLog.builder().id(UUID.randomUUID()).entityType("BRAND").entityId(brandId).verificationProvider("KARZA_GSTIN").rawRequestPayload("{\"gstin\":\"" + gstin + "\"}").rawResponsePayload(doc.getApiRawResponse()).status(status.name()).createdAt(LocalDateTime.now()).build();
+        BrandVerificationAuditLog audit = BrandVerificationAuditLog.builder().id(UUID.randomUUID()).entityType("BRAND").entityId(brandId).verificationProvider("KARZA_GSTIN").rawRequestPayload(asJson("gstin", gstin)).rawResponsePayload(doc.getApiRawResponse()).status(status.name()).createdAt(LocalDateTime.now()).build();
         eventPublisher.publishEvent(new VerificationAuditEvent(this, audit));
         // Callback to Restaurant Service
         RestaurantServiceClient.VerificationCallbackRequest callback = new RestaurantServiceClient.VerificationCallbackRequest();
@@ -184,5 +184,23 @@ public class BrandVerificationService {
         this.nameMatchingService = nameMatchingService;
         this.restaurantServiceClient = restaurantServiceClient;
         this.redisTemplate = redisTemplate;
+    }
+    private static final com.fasterxml.jackson.databind.ObjectMapper JSON_MAPPER =
+            new com.fasterxml.jackson.databind.ObjectMapper();
+
+    /**
+     * Builds a single-field JSON object with proper escaping.
+     *
+     * <p>These payloads previously used string concatenation on values that are not controlled by
+     * this service -- {@code gstin} is user-supplied and {@code legalName} comes from the external
+     * verification provider -- so a quote or backslash in either produced malformed JSON in the
+     * stored document and audit log.
+     */
+    private static String asJson(String field, String value) {
+        try {
+            return JSON_MAPPER.writeValueAsString(java.util.Collections.singletonMap(field, value));
+        } catch (Exception e) {
+            return "{}";
+        }
     }
 }

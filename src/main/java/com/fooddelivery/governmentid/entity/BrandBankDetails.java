@@ -10,12 +10,18 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import org.springframework.data.domain.Persistable;
+import jakarta.persistence.Transient;
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.PostLoad;
+
 @Entity
 @Table(name = "brand_bank_details")
-public class BrandBankDetails {
+public class BrandBankDetails implements Persistable<UUID> {
     @Id
     @Column(name = "id")
     private UUID id;
@@ -35,7 +41,23 @@ public class BrandBankDetails {
     private VerificationStatus pennyDropStatus;
     @Column(name = "verified_at")
     private OffsetDateTime verifiedAt;
+    
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
+    @Transient
+    private boolean isNew = true;
+
+    @Override
+    public boolean isNew() {
+        return this.isNew;
+    }
+
+    @PostPersist
+    @PostLoad
+    void markNotNew() {
+        this.isNew = false;
+    }
 
     @java.lang.SuppressWarnings("all")
     public static class BrandBankDetailsBuilder {
