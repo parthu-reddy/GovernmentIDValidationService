@@ -67,4 +67,7 @@ CREATE TABLE executive_documents (
     created_at TIMESTAMP WITH TIME ZONE
 );
 
+
+
+
 CREATE INDEX IF NOT EXISTS idx_biometric_exec_time ON biometric_verifications(executive_id, verification_time DESC);
