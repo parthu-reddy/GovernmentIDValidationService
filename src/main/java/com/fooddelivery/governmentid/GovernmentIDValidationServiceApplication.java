@@ -7,11 +7,13 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-@SpringBootApplication(scanBasePackages = {"com.fooddelivery.governmentid", "com.fooddelivery.common", "com.fooddelivery"})
+@SpringBootApplication(
+    scanBasePackages = {"com.fooddelivery.governmentid", "com.fooddelivery.common"}
+)
 @EnableDiscoveryClient
 @EnableFeignClients
-@EnableJpaRepositories(basePackages = {"com.fooddelivery.governmentid"})
-@org.springframework.boot.autoconfigure.domain.EntityScan(basePackages = {"com.fooddelivery.governmentid", "com.fooddelivery.common"})
+@org.springframework.data.jpa.repository.config.EnableJpaRepositories(basePackages = {"com.fooddelivery.governmentid", "com.fooddelivery.common.repository"})
+@org.springframework.boot.autoconfigure.domain.EntityScan(basePackages = {"com.fooddelivery.governmentid", "com.fooddelivery.common.entity"})
 @EnableAsync
 public class GovernmentIDValidationServiceApplication {
 
