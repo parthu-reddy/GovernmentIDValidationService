@@ -16,16 +16,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @ActiveProfiles("contract-test")
-@SpringBootTest(classes = GovIdContractConsumerTest.TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(classes = GovIdContractConsumerTest.TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = {
+    // Stub ids are Maven artifactIds; Feign resolves by spring.application.name. These two
+    // differ for these services, so the stub must be registered under the name the client asks for.
+    "stubrunner.idsToServiceIds.restaurant-application=restaurant-service",
+    "stubrunner.idsToServiceIds.delivery-executive-application=delivery-service"
+})
 @AutoConfigureStubRunner(ids = { "com.fooddelivery:restaurant-application:+:stubs:8091", "com.fooddelivery:delivery-executive-application:+:stubs:8092" }, stubsMode = StubRunnerProperties.StubsMode.LOCAL)
 public class GovIdContractConsumerTest {
 
 
     @Autowired
     private com.fooddelivery.governmentid.client.DeliveryExecutiveClient deliveryExecutiveClient;
-    @Autowired
-    private com.fooddelivery.governmentid.client.RestaurantServiceClient restaurantServiceClient;
-
 
     @Configuration
     @EnableAutoConfiguration(exclude = {
@@ -34,13 +36,14 @@ public class GovIdContractConsumerTest {
             HibernateJpaAutoConfiguration.class
     })
     @EnableFeignClients(basePackages = "com.fooddelivery.governmentid.client")
-    @org.springframework.context.annotation.Import({com.fooddelivery.governmentid.client.DeliveryExecutiveClientFallback.class, com.fooddelivery.governmentid.client.RestaurantServiceClientFallback.class})
+    @org.springframework.context.annotation.Import({com.fooddelivery.governmentid.client.DeliveryExecutiveClientFallback.class})
     static class TestConfig {
     }
 
     @Test
-    public void contextLoads() {
-        assertNotNull(deliveryExecutiveClient);
-        assertNotNull(restaurantServiceClient);
-}
+    public void testSuspendDriver() {
+        org.springframework.http.ResponseEntity<Void> response = deliveryExecutiveClient.suspendDriver("00000000-0000-0000-0000-000000000000");
+        assertNotNull(response);
+        org.junit.jupiter.api.Assertions.assertEquals(200, response.getStatusCodeValue());
+    }
 }
