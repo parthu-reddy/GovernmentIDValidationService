@@ -34,7 +34,7 @@ public class BrandCreatedEventListener {
     }
 
     @RetryableTopic(attempts = "5", backoff = @Backoff(delay = 1000, multiplier = 2.0), autoCreateTopics = "true", dltStrategy = DltStrategy.FAIL_ON_ERROR)
-    @KafkaListener(topics = KafkaConstants.TOPIC_RESTAURANT_EVENTS, groupId = KafkaConstants.GROUP_GOV_ID_VALIDATION)
+    @KafkaListener(topics = KafkaConstants.TOPIC_RESTAURANT_EVENTS, groupId = KafkaConstants.GROUP_GOV_ID_VALIDATION + "-brandcreatedeventlistener")
     public void onRestaurantEvent(@Payload String message, @Header("eventType") String eventType, @org.springframework.messaging.handler.annotation.Headers java.util.Map<String, Object> headers) {
         if (EventType.BRAND_CREATED.name().equals(eventType)) {
             try {
