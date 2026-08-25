@@ -28,8 +28,7 @@ public class VerificationController {
     private final ExecutiveDocumentService documentService;
     private final com.fooddelivery.common.service.CloudflareR2Service storageService;
     private final com.fasterxml.jackson.databind.ObjectMapper objectMapper;
-
-
+    private final com.fooddelivery.common.service.RateLimitingService rateLimitingService;
     public record DLRequest(@NotBlank String dlNumber, @NotBlank String dateOfBirth, String documentUrl) {
     }
 
@@ -77,6 +76,10 @@ public class VerificationController {
     @PreAuthorize("hasRole(\'DELIVERY\')")
     public ResponseEntity<?> verifyDrivingLicense(@Valid @RequestBody DLRequest request, Principal principal) {
         UUID executiveId = UUID.fromString(principal.getName());
+        io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_dl:" + executiveId, 3, 3, java.time.Duration.ofHours(1));
+        if (!bucket.tryConsume(1)) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.TOO_MANY_REQUESTS).build();
+        }
         var response = dlService.verifyDrivingLicense(request.dlNumber(), request.dateOfBirth());
         LocalDate expiry = null;
         if (response.expiryDate() != null) {
@@ -104,6 +107,10 @@ public class VerificationController {
     @PreAuthorize("hasRole(\'DELIVERY\')")
     public ResponseEntity<?> verifyVehicleRC(@Valid @RequestBody RCRequest request, Principal principal) {
         UUID executiveId = UUID.fromString(principal.getName());
+        io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_rc:" + executiveId, 3, 3, java.time.Duration.ofHours(1));
+        if (!bucket.tryConsume(1)) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.TOO_MANY_REQUESTS).build();
+        }
         var response = rcService.verifyVehicleRC(request.registrationNumber());
         LocalDate expiry = null;
         if (response.insuranceExpiry() != null) {
@@ -129,6 +136,10 @@ public class VerificationController {
     @PreAuthorize("hasRole(\'DELIVERY\')")
     public ResponseEntity<?> verifyBankAccount(@Valid @RequestBody BankRequest request, Principal principal) {
         UUID executiveId = UUID.fromString(principal.getName());
+        io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_bank:" + executiveId, 3, 3, java.time.Duration.ofHours(1));
+        if (!bucket.tryConsume(1)) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.TOO_MANY_REQUESTS).build();
+        }
         var bankDetails = bankService.verifyBankAccount(executiveId, request.accountNumber(), request.ifscCode(), request.kycFullName());
         return ResponseEntity.ok(bankDetails);
     }
@@ -137,6 +148,10 @@ public class VerificationController {
     @PreAuthorize("hasRole(\'DELIVERY\')")
     public ResponseEntity<?> verifyBiometric(@Valid @RequestBody BiometricRequest request, Principal principal) {
         UUID executiveId = UUID.fromString(principal.getName());
+        io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_biometric:" + executiveId, 3, 3, java.time.Duration.ofHours(1));
+        if (!bucket.tryConsume(1)) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.TOO_MANY_REQUESTS).build();
+        }
         var response = biometricService.verifySelfie(executiveId, request.selfieUrl());
         return ResponseEntity.ok(response);
     }
@@ -180,7 +195,7 @@ public class VerificationController {
     }
 
     @java.lang.SuppressWarnings("all")
-    public VerificationController(final DrivingLicenseVerificationService dlService, final VehicleVerificationService rcService, final FinancialVerificationService bankService, final BiometricVerificationService biometricService, final ExecutiveDocumentService documentService, final com.fooddelivery.common.service.CloudflareR2Service storageService, final com.fasterxml.jackson.databind.ObjectMapper objectMapper) {
+    public VerificationController(final DrivingLicenseVerificationService dlService, final VehicleVerificationService rcService, final FinancialVerificationService bankService, final BiometricVerificationService biometricService, final ExecutiveDocumentService documentService, final com.fooddelivery.common.service.CloudflareR2Service storageService, final com.fasterxml.jackson.databind.ObjectMapper objectMapper, final com.fooddelivery.common.service.RateLimitingService rateLimitingService) {
         this.dlService = dlService;
         this.rcService = rcService;
         this.bankService = bankService;
@@ -188,5 +203,6 @@ public class VerificationController {
         this.documentService = documentService;
         this.storageService = storageService;
         this.objectMapper = objectMapper;
+        this.rateLimitingService = rateLimitingService;
     }
 }

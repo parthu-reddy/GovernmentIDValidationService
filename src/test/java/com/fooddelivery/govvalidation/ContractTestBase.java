@@ -43,8 +43,8 @@ public abstract class ContractTestBase {
 
         when(biometricService.getLastSuccessfulBiometricTime(any())).thenReturn(java.time.OffsetDateTime.parse("2023-10-01T12:00:00Z"));
 
-        VerificationController controller = new VerificationController(dlService, rcService, bankService, biometricService, documentService, storageService, objectMapper);
-
+        com.fooddelivery.common.service.RateLimitingService rateLimitingService = Mockito.mock(com.fooddelivery.common.service.RateLimitingService.class);
+        VerificationController controller = new VerificationController(dlService, rcService, bankService, biometricService, documentService, storageService, objectMapper, rateLimitingService);
         // Brand KYC endpoints consumed by RestaurantApplication (verifyGstin, verifyBrandBankAccount).
         BrandVerificationService brandVerificationService = Mockito.mock(BrandVerificationService.class);
         com.fooddelivery.governmentid.controller.BrandVerificationController brandController =
