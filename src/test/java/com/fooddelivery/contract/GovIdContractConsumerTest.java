@@ -29,8 +29,8 @@ public class GovIdContractConsumerTest {
     @Autowired
     private com.fooddelivery.governmentid.client.DeliveryExecutiveClient deliveryExecutiveClient;
 
-    @Configuration
-    @EnableAutoConfiguration(exclude = {
+    @org.springframework.boot.SpringBootConfiguration
+    @org.springframework.boot.autoconfigure.EnableAutoConfiguration(exclude = {
             DataSourceAutoConfiguration.class,
             DataSourceTransactionManagerAutoConfiguration.class,
             HibernateJpaAutoConfiguration.class
