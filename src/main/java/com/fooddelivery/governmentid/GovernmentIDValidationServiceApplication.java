@@ -12,8 +12,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 )
 @EnableDiscoveryClient
 @EnableFeignClients
-@org.springframework.data.jpa.repository.config.EnableJpaRepositories(basePackages = {"com.fooddelivery.governmentid", "com.fooddelivery.common.repository"})
-@org.springframework.boot.autoconfigure.domain.EntityScan(basePackages = {"com.fooddelivery.governmentid", "com.fooddelivery.common.entity"})
+@org.springframework.data.jpa.repository.config.EnableJpaRepositories(basePackages = {"com.fooddelivery.governmentid", "com.fooddelivery.common"})
+@org.springframework.boot.autoconfigure.domain.EntityScan(basePackages = {"com.fooddelivery.governmentid", "com.fooddelivery.common"})
 @EnableAsync
 public class GovernmentIDValidationServiceApplication {
 
