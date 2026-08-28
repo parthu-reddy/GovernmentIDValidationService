@@ -18,18 +18,31 @@ public class BrandVerificationController {
 
     private final BrandVerificationService brandVerificationService;
 
+    /** Brand onboarding, performed by a signed-in partner. */
+    @org.springframework.security.access.prepost.PreAuthorize("isAuthenticated()")
     @PostMapping("/gstin")
     public ResponseEntity<Void> verifyGstin(@Valid @RequestBody GstinRequest request) {
         brandVerificationService.verifyGstin(request.getBrandId(), request.getGstin(), request.getBrandName());
         return ResponseEntity.accepted().build();
     }
 
+    /** Brand onboarding, performed by a signed-in partner. */
+    @org.springframework.security.access.prepost.PreAuthorize("isAuthenticated()")
     @PostMapping("/bank-account")
     public ResponseEntity<Void> verifyBankAccount(@Valid @RequestBody BankAccountRequest request) {
         brandVerificationService.initiatePennyDrop(request.getBrandId(), request.getAccountNumber(), request.getIfscCode(), request.getBrandName());
         return ResponseEntity.accepted().build();
     }
 
+    /**
+     * Called by the penny-drop provider, not by a user. NOTE: its path is
+     * /api/v1/verification/brands/webhooks/penny-drop, which does NOT match the
+     * "/api/v1/webhooks/**" permitAll rule in CommonSecurityConfig -- so default-deny currently
+     * authenticates it and an external provider cannot reach it. Left as-is rather than guessed at:
+     * whether to move the path under /api/v1/webhooks/ or widen the rule is a routing decision, and
+     * either way the callback needs signature verification it does not have today.
+     */
+    @org.springframework.security.access.prepost.PreAuthorize("isAuthenticated()")
     @PostMapping("/webhooks/penny-drop")
     public ResponseEntity<Void> handlePennyDropWebhook(@Valid @RequestBody PennyDropWebhook request) {
         brandVerificationService.processPennyDropWebhook(request.getBrandId(), request.getBeneficiaryName(), "SUCCESS".equalsIgnoreCase(request.getStatus()), request.getRegisteredBrandName());

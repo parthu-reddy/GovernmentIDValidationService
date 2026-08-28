@@ -22,7 +22,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
     "stubrunner.idsToServiceIds.restaurant-application=restaurant-service",
     "stubrunner.idsToServiceIds.delivery-executive-application=delivery-service"
 })
-@AutoConfigureStubRunner(ids = { "com.fooddelivery:restaurant-application:+:stubs:8096", "com.fooddelivery:delivery-executive-application:+:stubs:8097" }, stubsMode = StubRunnerProperties.StubsMode.LOCAL)
+@AutoConfigureStubRunner(ids = { "com.fooddelivery:restaurant-application:+:stubs", "com.fooddelivery:delivery-executive-application:+:stubs" }, stubsMode = StubRunnerProperties.StubsMode.LOCAL)
 public class GovIdContractConsumerTest {
 
 
