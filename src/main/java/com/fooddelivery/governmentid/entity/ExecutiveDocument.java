@@ -12,7 +12,10 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "executive_documents")
+@Table(name = "executive_documents")@lombok.AllArgsConstructor
+@lombok.NoArgsConstructor
+@lombok.Data
+
 public class ExecutiveDocument {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -41,93 +44,4 @@ public class ExecutiveDocument {
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
 
-    @java.lang.SuppressWarnings("all")
-    public UUID getDocumentId() {
-        return this.documentId;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public UUID getExecutiveId() {
-        return this.executiveId;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public DocumentType getDocType() {
-        return this.docType;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public String getDocumentNumber() {
-        return this.documentNumber;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public String getDocumentUrl() {
-        return this.documentUrl;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public VerificationStatus getApiVerificationStatus() {
-        return this.apiVerificationStatus;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public String getApiRawResponse() {
-        return this.apiRawResponse;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public LocalDate getExpiryDate() {
-        return this.expiryDate;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public OffsetDateTime getCreatedAt() {
-        return this.createdAt;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setDocumentId(final UUID documentId) {
-        this.documentId = documentId;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setExecutiveId(final UUID executiveId) {
-        this.executiveId = executiveId;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setDocType(final DocumentType docType) {
-        this.docType = docType;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setDocumentNumber(final String documentNumber) {
-        this.documentNumber = documentNumber;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setDocumentUrl(final String documentUrl) {
-        this.documentUrl = documentUrl;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setApiVerificationStatus(final VerificationStatus apiVerificationStatus) {
-        this.apiVerificationStatus = apiVerificationStatus;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setApiRawResponse(final String apiRawResponse) {
-        this.apiRawResponse = apiRawResponse;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setExpiryDate(final LocalDate expiryDate) {
-        this.expiryDate = expiryDate;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setCreatedAt(final OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 }

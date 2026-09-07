@@ -9,7 +9,10 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "executive_bank_details")
+@Table(name = "executive_bank_details")@lombok.AllArgsConstructor
+@lombok.NoArgsConstructor
+@lombok.Data
+
 public class ExecutiveBankDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -32,83 +35,4 @@ public class ExecutiveBankDetails {
     @Column(name = "verified_at")
     private OffsetDateTime verifiedAt;
 
-    @java.lang.SuppressWarnings("all")
-    public UUID getBankId() {
-        return this.bankId;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public UUID getExecutiveId() {
-        return this.executiveId;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public String getAccountNumber() {
-        return this.accountNumber;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public String getIfscCode() {
-        return this.ifscCode;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public String getBankRegisteredName() {
-        return this.bankRegisteredName;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public VerificationStatus getPennyDropStatus() {
-        return this.pennyDropStatus;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public BigDecimal getNameMatchScore() {
-        return this.nameMatchScore;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public OffsetDateTime getVerifiedAt() {
-        return this.verifiedAt;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setBankId(final UUID bankId) {
-        this.bankId = bankId;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setExecutiveId(final UUID executiveId) {
-        this.executiveId = executiveId;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setAccountNumber(final String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setIfscCode(final String ifscCode) {
-        this.ifscCode = ifscCode;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setBankRegisteredName(final String bankRegisteredName) {
-        this.bankRegisteredName = bankRegisteredName;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setPennyDropStatus(final VerificationStatus pennyDropStatus) {
-        this.pennyDropStatus = pennyDropStatus;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setNameMatchScore(final BigDecimal nameMatchScore) {
-        this.nameMatchScore = nameMatchScore;
-    }
-
-    @java.lang.SuppressWarnings("all")
-    public void setVerifiedAt(final OffsetDateTime verifiedAt) {
-        this.verifiedAt = verifiedAt;
-    }
 }
