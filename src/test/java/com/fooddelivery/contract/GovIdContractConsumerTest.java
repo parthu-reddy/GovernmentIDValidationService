@@ -11,7 +11,6 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner;
-import org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
@@ -22,7 +21,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
     "stubrunner.idsToServiceIds.restaurant-application=restaurant-service",
     "stubrunner.idsToServiceIds.delivery-executive-application=delivery-service"
 })
-@AutoConfigureStubRunner(ids = { "com.fooddelivery:restaurant-application:+:stubs", "com.fooddelivery:delivery-executive-application:+:stubs" }, stubsMode = StubRunnerProperties.StubsMode.LOCAL)
+@AutoConfigureStubRunner(ids = { "com.fooddelivery:restaurant-application:+:stubs", "com.fooddelivery:delivery-executive-application:+:stubs" })
 public class GovIdContractConsumerTest {
 
 
