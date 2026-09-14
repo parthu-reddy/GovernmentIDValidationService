@@ -24,23 +24,26 @@ import java.util.UUID;
 public class BrandCreatedEventListener {
 
     private final ObjectMapper objectMapper;
+    private final com.fooddelivery.common.event.EventBinder eventBinder;
     private final BrandVerificationService brandVerificationService;
     private final IIdempotencyKeyRepository idempotencyKeyRepository;
 
-    public BrandCreatedEventListener(ObjectMapper objectMapper, BrandVerificationService brandVerificationService, IIdempotencyKeyRepository idempotencyKeyRepository) {
+    public BrandCreatedEventListener(ObjectMapper objectMapper, com.fooddelivery.common.event.EventBinder eventBinder, BrandVerificationService brandVerificationService, IIdempotencyKeyRepository idempotencyKeyRepository) {
         this.objectMapper = objectMapper;
+        this.eventBinder = eventBinder;
         this.brandVerificationService = brandVerificationService;
         this.idempotencyKeyRepository = idempotencyKeyRepository;
     }
 
-    @RetryableTopic(attempts = "5", backoff = @Backoff(delay = 1000, multiplier = 2.0), autoCreateTopics = "true", dltStrategy = DltStrategy.FAIL_ON_ERROR)
+    @RetryableTopic(attempts = "5", backoff = @Backoff(delay = 1000, multiplier = 2.0), autoCreateTopics = "true", dltStrategy = DltStrategy.FAIL_ON_ERROR, exclude = {com.fooddelivery.common.event.EventBindingException.class}, traversingCauses = "true")
     @KafkaListener(topics = KafkaConstants.TOPIC_RESTAURANT_EVENTS, groupId = KafkaConstants.GROUP_GOV_ID_VALIDATION + "-brandcreatedeventlistener")
     public void onRestaurantEvent(@Payload String message, @Header("eventType") String eventType, @org.springframework.messaging.handler.annotation.Headers java.util.Map<String, Object> headers) {
-        if (EventType.BRAND_CREATED.name().equals(eventType)) {
+        java.util.Optional<com.fooddelivery.common.event.BrandCreatedEvent> eventOpt = eventBinder.bindIf(EventType.BRAND_CREATED, eventType, message, com.fooddelivery.common.event.BrandCreatedEvent.class);
+        if (eventOpt.isPresent()) {
             try {
                 log.info("Received BRAND_CREATED event via Kafka");
-                JsonNode payload = objectMapper.readTree(message);
-                UUID brandId = UUID.fromString(payload.get("brandId").asText());
+                com.fooddelivery.common.event.BrandCreatedEvent event = eventOpt.get();
+                UUID brandId = UUID.fromString(event.getBrandId());
                 
                 String extractedEventId = com.fooddelivery.common.util.KafkaHeaderUtils.extractHeaderValue(headers, "eventId");
                 final String resolvedEventId;
@@ -57,10 +60,10 @@ public class BrandCreatedEventListener {
                     return;
                 }
 
-                String brandName = payload.get("brandName").asText();
-                String gstin = payload.get("gstin").asText();
-                String bankAccountNumber = payload.get("bankAccountNumber").asText();
-                String ifscCode = payload.get("ifscCode").asText();
+                String brandName = event.getBrandName();
+                String gstin = event.getGstin();
+                String bankAccountNumber = event.getBankAccountNumber();
+                String ifscCode = event.getIfscCode();
                 // Trigger KYC async locally in the GovID service
                 brandVerificationService.verifyGstin(brandId, gstin, brandName);
                 brandVerificationService.initiatePennyDrop(brandId, bankAccountNumber, ifscCode, brandName);
