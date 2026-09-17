@@ -234,8 +234,13 @@
                 <extensions>true</extensions>
                 <configuration>
                     <testFramework>JUNIT5</testFramework>
+                    <!-- No baseClassMappings: this service has no messaging contracts. The only
+                         one, delivery_executive_events, was removed on 2026-09-17 along with its
+                         BaseMessagingClass, when biometric lockout stopped publishing to the
+                         consumer-less `delivery-executive-events` topic and started calling
+                         DeliveryExecutiveClient.suspendDriver() instead. -->
                     <baseClassForTests>com.fooddelivery.govvalidation.ContractTestBase</baseClassForTests>
-                <baseClassMappings><baseClassMapping><contractPackageRegex>.*messaging.*</contractPackageRegex><baseClassFQN>com.fooddelivery.governmentid.contract.BaseMessagingClass</baseClassFQN></baseClassMapping></baseClassMappings></configuration>
+                </configuration>
             </plugin>
         </plugins>
     </build>
