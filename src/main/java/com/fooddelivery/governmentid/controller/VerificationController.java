@@ -48,7 +48,7 @@ public class VerificationController {
     private String activeProfile;
 
     @GetMapping("/upload-url")
-    @PreAuthorize("hasAnyRole(\'DELIVERY\', \'RESTAURANT\', \'RESTAURANT_MANAGER\')")
+    @PreAuthorize("hasAnyRole('DELIVERY', 'RESTAURANT', 'RESTAURANT_MANAGER')")
     public ResponseEntity<?> getPresignedUploadUrl(@RequestParam DocumentType docType, @RequestParam String contentType, Principal principal) {
         UUID executiveId = principal != null ? UUID.fromString(principal.getName()) : UUID.randomUUID();
         String ext = contentType.contains("pdf") ? "pdf" : "jpg";
@@ -61,7 +61,7 @@ public class VerificationController {
     }
 
     @GetMapping("/download-url")
-    @PreAuthorize("hasRole(\'DELIVERY\')")
+    @PreAuthorize("hasRole('DELIVERY')")
     public ResponseEntity<?> getPresignedDownloadUrl(@RequestParam String objectKey, Principal principal) {
         // Basic security check: ensure the object key belongs to this executive
         UUID executiveId = UUID.fromString(principal.getName());
@@ -73,7 +73,7 @@ public class VerificationController {
     }
 
     @PostMapping("/driving-license")
-    @PreAuthorize("hasRole(\'DELIVERY\')")
+    @PreAuthorize("hasRole('DELIVERY')")
     public ResponseEntity<?> verifyDrivingLicense(@Valid @RequestBody DLRequest request, Principal principal) {
         UUID executiveId = UUID.fromString(principal.getName());
         io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_dl:" + executiveId, 3, 3, java.time.Duration.ofHours(1));
@@ -104,7 +104,7 @@ public class VerificationController {
     }
 
     @PostMapping("/vehicle-rc")
-    @PreAuthorize("hasRole(\'DELIVERY\')")
+    @PreAuthorize("hasRole('DELIVERY')")
     public ResponseEntity<?> verifyVehicleRC(@Valid @RequestBody RCRequest request, Principal principal) {
         UUID executiveId = UUID.fromString(principal.getName());
         io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_rc:" + executiveId, 3, 3, java.time.Duration.ofHours(1));
@@ -133,7 +133,7 @@ public class VerificationController {
     }
 
     @PostMapping("/bank-account")
-    @PreAuthorize("hasRole(\'DELIVERY\')")
+    @PreAuthorize("hasRole('DELIVERY')")
     public ResponseEntity<?> verifyBankAccount(@Valid @RequestBody BankRequest request, Principal principal) {
         UUID executiveId = UUID.fromString(principal.getName());
         io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_bank:" + executiveId, 3, 3, java.time.Duration.ofHours(1));
@@ -145,7 +145,7 @@ public class VerificationController {
     }
 
     @PostMapping("/biometric")
-    @PreAuthorize("hasRole(\'DELIVERY\')")
+    @PreAuthorize("hasRole('DELIVERY')")
     public ResponseEntity<?> verifyBiometric(@Valid @RequestBody BiometricRequest request, Principal principal) {
         UUID executiveId = UUID.fromString(principal.getName());
         io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_biometric:" + executiveId, 3, 3, java.time.Duration.ofHours(1));
@@ -157,7 +157,7 @@ public class VerificationController {
     }
 
     @GetMapping("/status/{executiveId}")
-    @PreAuthorize("hasRole(\'DELIVERY\')")
+    @PreAuthorize("hasRole('DELIVERY')")
     public ResponseEntity<?> getVerificationSummary(@PathVariable UUID executiveId) {
         if ("dev".equalsIgnoreCase(activeProfile) || "test".equalsIgnoreCase(activeProfile)) {
             return ResponseEntity.ok(new VerificationSummaryResponse(true, true, "MCWG, LMV", true, true, java.time.OffsetDateTime.now().toString()));
