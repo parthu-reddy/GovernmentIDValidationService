@@ -76,7 +76,7 @@ public class VerificationController {
     @PreAuthorize("hasRole('DELIVERY')")
     public ResponseEntity<?> verifyDrivingLicense(@Valid @RequestBody DLRequest request, Principal principal) {
         UUID executiveId = UUID.fromString(principal.getName());
-        io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_dl:" + executiveId, 3, 3, java.time.Duration.ofHours(1));
+        io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_dl:" + executiveId, 6, 6, java.time.Duration.ofHours(1));
         if (!bucket.tryConsume(1)) {
             return ResponseEntity.status(org.springframework.http.HttpStatus.TOO_MANY_REQUESTS).build();
         }
@@ -107,7 +107,7 @@ public class VerificationController {
     @PreAuthorize("hasRole('DELIVERY')")
     public ResponseEntity<?> verifyVehicleRC(@Valid @RequestBody RCRequest request, Principal principal) {
         UUID executiveId = UUID.fromString(principal.getName());
-        io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_rc:" + executiveId, 3, 3, java.time.Duration.ofHours(1));
+        io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_rc:" + executiveId, 6, 6, java.time.Duration.ofHours(1));
         if (!bucket.tryConsume(1)) {
             return ResponseEntity.status(org.springframework.http.HttpStatus.TOO_MANY_REQUESTS).build();
         }
@@ -136,7 +136,7 @@ public class VerificationController {
     @PreAuthorize("hasRole('DELIVERY')")
     public ResponseEntity<?> verifyBankAccount(@Valid @RequestBody BankRequest request, Principal principal) {
         UUID executiveId = UUID.fromString(principal.getName());
-        io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_bank:" + executiveId, 3, 3, java.time.Duration.ofHours(1));
+        io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_bank:" + executiveId, 6, 6, java.time.Duration.ofHours(1));
         if (!bucket.tryConsume(1)) {
             return ResponseEntity.status(org.springframework.http.HttpStatus.TOO_MANY_REQUESTS).build();
         }
@@ -148,7 +148,7 @@ public class VerificationController {
     @PreAuthorize("hasRole('DELIVERY')")
     public ResponseEntity<?> verifyBiometric(@Valid @RequestBody BiometricRequest request, Principal principal) {
         UUID executiveId = UUID.fromString(principal.getName());
-        io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_biometric:" + executiveId, 3, 3, java.time.Duration.ofHours(1));
+        io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_biometric:" + executiveId, 6, 6, java.time.Duration.ofHours(1));
         if (!bucket.tryConsume(1)) {
             return ResponseEntity.status(org.springframework.http.HttpStatus.TOO_MANY_REQUESTS).build();
         }
