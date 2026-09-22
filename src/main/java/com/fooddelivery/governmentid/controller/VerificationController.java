@@ -148,10 +148,13 @@ public class VerificationController {
     @PreAuthorize("hasRole('DELIVERY')")
     public ResponseEntity<?> verifyBiometric(@Valid @RequestBody BiometricRequest request, Principal principal) {
         UUID executiveId = UUID.fromString(principal.getName());
+        log.info("verifyBiometric called for executiveId: {}", executiveId);
         io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket("verify_biometric:" + executiveId, 6, 6, java.time.Duration.ofHours(1));
         if (!bucket.tryConsume(1)) {
+            log.warn("verifyBiometric bucket.tryConsume returned FALSE for executiveId: {}", executiveId);
             return ResponseEntity.status(org.springframework.http.HttpStatus.TOO_MANY_REQUESTS).build();
         }
+        log.info("verifyBiometric bucket.tryConsume returned TRUE, delegating to biometricService");
         var response = biometricService.verifySelfie(executiveId, request.selfieUrl());
         return ResponseEntity.ok(response);
     }
