@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -33,6 +33,6 @@ public class ExecutiveBankDetails {
     @Column(name = "name_match_score", precision = 4, scale = 3)
     private BigDecimal nameMatchScore;
     @Column(name = "verified_at")
-    private OffsetDateTime verifiedAt;
+    private Instant verifiedAt;
 
 }

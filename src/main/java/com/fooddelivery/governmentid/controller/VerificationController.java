@@ -163,7 +163,7 @@ public class VerificationController {
     @PreAuthorize("hasRole('DELIVERY')")
     public ResponseEntity<?> getVerificationSummary(@PathVariable UUID executiveId) {
         if ("dev".equalsIgnoreCase(activeProfile) || "test".equalsIgnoreCase(activeProfile)) {
-            return ResponseEntity.ok(new VerificationSummaryResponse(true, true, "MCWG, LMV", true, true, java.time.OffsetDateTime.now().toString()));
+            return ResponseEntity.ok(new VerificationSummaryResponse(true, true, "MCWG, LMV", true, true, java.time.Instant.now()));
         }
         var documents = documentService.getDocumentsForExecutive(executiveId);
         boolean allDocsApproved = java.util.Set.of(DocumentType.DRIVING_LICENSE, DocumentType.RC).stream().allMatch(docType -> documents.stream().anyMatch(d -> d.getDocType() == docType && d.getApiVerificationStatus() == VerificationStatus.APPROVED));
@@ -191,13 +191,12 @@ public class VerificationController {
                 }
             }
         }
-        java.time.OffsetDateTime lastBiometric = biometricService.getLastSuccessfulBiometricTime(executiveId);
-        String lastBiometricStr = lastBiometric != null ? lastBiometric.toString() : null;
-        return ResponseEntity.ok(new VerificationSummaryResponse(allDocsApproved, bankApproved, dlVehicleClass, dlApproved, rcApproved, lastBiometricStr));
+        java.time.Instant lastBiometric = biometricService.getLastSuccessfulBiometricTime(executiveId);
+        return ResponseEntity.ok(new VerificationSummaryResponse(allDocsApproved, bankApproved, dlVehicleClass, dlApproved, rcApproved, lastBiometric));
     }
 
 
-    public record VerificationSummaryResponse(boolean allDocsApproved, boolean bankApproved, String dlVehicleClass, boolean dlApproved, boolean rcApproved, String lastBiometricVerificationAt) {
+    public record VerificationSummaryResponse(boolean allDocsApproved, boolean bankApproved, String dlVehicleClass, boolean dlApproved, boolean rcApproved, java.time.Instant lastBiometricVerificationAt) {
     }
 
     @java.lang.SuppressWarnings("all")

@@ -3,7 +3,7 @@ package com.fooddelivery.governmentid.entity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -26,6 +26,6 @@ public class BiometricVerification {
     private boolean isLive;
     @CreationTimestamp
     @Column(name = "verification_time")
-    private OffsetDateTime verificationTime;
+    private Instant verificationTime;
 
 }

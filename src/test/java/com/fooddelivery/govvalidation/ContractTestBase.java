@@ -41,7 +41,7 @@ public abstract class ContractTestBase {
         when(bankDetails.getPennyDropStatus()).thenReturn(com.fooddelivery.common.enums.VerificationStatus.APPROVED);
         when(bankService.getBankDetails(any())).thenReturn(java.util.Optional.of(bankDetails));
 
-        when(biometricService.getLastSuccessfulBiometricTime(any())).thenReturn(java.time.OffsetDateTime.parse("2023-10-01T12:00:00Z"));
+        when(biometricService.getLastSuccessfulBiometricTime(any())).thenReturn(java.time.Instant.parse("2023-10-01T12:00:00Z"));
 
         com.fooddelivery.common.service.RateLimitingService rateLimitingService = Mockito.mock(com.fooddelivery.common.service.RateLimitingService.class);
         VerificationController controller = new VerificationController(dlService, rcService, bankService, biometricService, documentService, storageService, objectMapper, rateLimitingService);
@@ -50,6 +50,7 @@ public abstract class ContractTestBase {
         com.fooddelivery.governmentid.controller.BrandVerificationController brandController =
                 new com.fooddelivery.governmentid.controller.BrandVerificationController(brandVerificationService);
 
-        RestAssuredMockMvc.standaloneSetup(controller, brandController);
+        // Serialize as production does: see PlatformJson (contract-harness Jackson drift).
+        com.fooddelivery.common.contract.PlatformJson.standaloneSetup(controller, brandController);
     }
 }

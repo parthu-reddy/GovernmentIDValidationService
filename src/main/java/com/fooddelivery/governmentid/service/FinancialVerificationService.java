@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Service
@@ -49,7 +49,7 @@ public class FinancialVerificationService {
         bankDetails.setBankRegisteredName(simulatedBankBeneficiaryName);
         bankDetails.setNameMatchScore(BigDecimal.valueOf(matchResult.score()));
         bankDetails.setPennyDropStatus(matchResult.status());
-        bankDetails.setVerifiedAt(OffsetDateTime.now());
+        bankDetails.setVerifiedAt(Instant.now());
         log.info("Penny drop verification completed for executive {}. Status: {}, Score: {}", executiveId, matchResult.status(), matchResult.score());
         return bankDetailsRepository.save(bankDetails);
     }

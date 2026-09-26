@@ -11,7 +11,7 @@ import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.hibernate.type.SqlTypes;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.data.domain.Persistable;
@@ -60,7 +60,7 @@ public class BrandDocument implements Persistable<UUID> {
     @Column(name = "api_verification_status", columnDefinition = "verification_status")
     private VerificationStatus apiVerificationStatus;
     @Column(name = "verified_at")
-    private OffsetDateTime verifiedAt;
+    private Instant verifiedAt;
 
 
 }

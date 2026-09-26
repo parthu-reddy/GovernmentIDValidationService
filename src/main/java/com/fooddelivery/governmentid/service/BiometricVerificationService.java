@@ -93,7 +93,7 @@ public class BiometricVerificationService {
         return new BiometricResult(true, new BigDecimal("0.995"));
     }
 
-    public java.time.OffsetDateTime getLastSuccessfulBiometricTime(UUID executiveId) {
+    public java.time.Instant getLastSuccessfulBiometricTime(UUID executiveId) {
         return biometricVerificationRepository.findTop10ByExecutiveIdOrderByVerificationTimeDesc(executiveId).stream().filter(v -> v.isLive() && v.getConfidenceScore().compareTo(MIN_CONFIDENCE_THRESHOLD) >= 0).map(BiometricVerification::getVerificationTime).findFirst().orElse(null);
     }
 

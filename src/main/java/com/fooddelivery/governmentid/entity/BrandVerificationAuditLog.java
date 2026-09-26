@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.data.domain.Persistable;
@@ -55,7 +55,7 @@ public class BrandVerificationAuditLog implements Persistable<UUID> {
     @Column(name = "status")
     private String status;
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
 
 }

@@ -10,8 +10,7 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.data.domain.Persistable;
@@ -44,10 +43,10 @@ public class BrandBankDetails implements Persistable<UUID> {
     @jakarta.persistence.Column(name = "penny_drop_status", columnDefinition = "verification_status")
     private VerificationStatus pennyDropStatus;
     @Column(name = "verified_at")
-    private OffsetDateTime verifiedAt;
+    private Instant verifiedAt;
     
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Transient
     private boolean isNew = true;

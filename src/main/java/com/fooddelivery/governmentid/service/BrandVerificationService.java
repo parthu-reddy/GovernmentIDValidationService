@@ -17,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -58,10 +57,10 @@ public class BrandVerificationService {
         doc.setDocumentNumber(gstin);
         doc.setApiVerificationStatus(status);
         doc.setApiRawResponse(asJson("legalName", legalName));
-        doc.setVerifiedAt(OffsetDateTime.now());
+        doc.setVerifiedAt(Instant.now());
         documentRepository.save(doc);
         // Audit log
-        BrandVerificationAuditLog audit = BrandVerificationAuditLog.builder().id(UUID.randomUUID()).entityType("BRAND").entityId(brandId).verificationProvider("KARZA_GSTIN").rawRequestPayload(asJson("gstin", gstin)).rawResponsePayload(doc.getApiRawResponse()).status(status.name()).createdAt(LocalDateTime.now()).build();
+        BrandVerificationAuditLog audit = BrandVerificationAuditLog.builder().id(UUID.randomUUID()).entityType("BRAND").entityId(brandId).verificationProvider("KARZA_GSTIN").rawRequestPayload(asJson("gstin", gstin)).rawResponsePayload(doc.getApiRawResponse()).status(status.name()).createdAt(Instant.now()).build();
         eventPublisher.publishEvent(new VerificationAuditEvent(this, audit));
         // Callback to Restaurant Service
         RestaurantServiceClient.VerificationCallbackRequest callback = new RestaurantServiceClient.VerificationCallbackRequest();
@@ -137,10 +136,10 @@ public class BrandVerificationService {
                 status = VerificationStatus.FAILED;
             }
             bankDetails.setPennyDropStatus(status);
-            bankDetails.setVerifiedAt(OffsetDateTime.now());
+            bankDetails.setVerifiedAt(Instant.now());
             bankDetailsRepository.save(bankDetails);
             // Audit log
-            BrandVerificationAuditLog audit = BrandVerificationAuditLog.builder().id(UUID.randomUUID()).entityType("BRAND").entityId(brandId).verificationProvider("PENNY_DROP_WEBHOOK").rawRequestPayload("{\"webhook_received\":true}").rawResponsePayload("{\"beneficiaryName\":\"" + beneficiaryName + "\"}").similarityScore(score).status(status.name()).createdAt(LocalDateTime.now()).build();
+            BrandVerificationAuditLog audit = BrandVerificationAuditLog.builder().id(UUID.randomUUID()).entityType("BRAND").entityId(brandId).verificationProvider("PENNY_DROP_WEBHOOK").rawRequestPayload("{\"webhook_received\":true}").rawResponsePayload("{\"beneficiaryName\":\"" + beneficiaryName + "\"}").similarityScore(score).status(status.name()).createdAt(Instant.now()).build();
             eventPublisher.publishEvent(new VerificationAuditEvent(this, audit));
             // Callback
             RestaurantServiceClient.VerificationCallbackRequest callback = new RestaurantServiceClient.VerificationCallbackRequest();

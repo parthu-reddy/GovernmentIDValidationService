@@ -18,7 +18,7 @@ Contract.make {
             dlVehicleClass: 'LMV',
             dlApproved: true,
             rcApproved: true,
-            lastBiometricVerificationAt: '2023-10-01T12:00Z'
+            lastBiometricVerificationAt: '2023-10-01T12:00:00Z'
         ])
     }
 }
